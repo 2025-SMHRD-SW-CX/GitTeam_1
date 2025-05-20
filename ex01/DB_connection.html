@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <input type="text" id="id">
+    <button id="btn_select">select 버튼</button> <br>
+    <script>
+        const supabascUrl ="https://fszwgldiafcffgbbtlwo.supabase.co";
+        const supabascKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZzendnbGRpYWZjZmZnYmJ0bHdvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc2ODE1NjAsImV4cCI6MjA2MzI1NzU2MH0.ZznTYaj-KNjyzZHFwm03X7J3S9XLZrHkCi10XAcQ1JI";
+
+
+         const Db = supabase.createClient(supabascUrl,supabascKey);
+         
+              const getData =async()=> {
+                        let { data: healuLog, error } = await Db
+                        .from('healuLog')
+                        .select('*')
+                        console.log(healuLog);
+              }
+
+        document.getElementById("btn_select").addEventListener("click",getData);
+    </script>
+
+</body>
+</html>
