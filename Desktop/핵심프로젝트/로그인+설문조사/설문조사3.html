@@ -5,6 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>설문 완료</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     body {
       margin: 0;
@@ -100,6 +101,36 @@
 
     <button class="go-button" onclick="window.location.href='main.html'">상담하러 가기</button>
   </div>
+  <script>
+    const supabaseUrl = "https://fszwgldiafcffgbbtlwo.supabase.co";
+    const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZzendnbGRpYWZjZmZnYmJ0bHdvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc2ODE1NjAsImV4cCI6MjA2MzI1NzU2MH0.ZznTYaj-KNjyzZHFwm03X7J3S9XLZrHkCi10XAcQ1JI";
+    const db = supabase.createClient(supabaseUrl, supabaseKey);
+
+    const user_id = localStorage.getItem("user_id");
+
+    // 페이지 로드시 설문 완료 상태 업데이트
+    window.addEventListener('DOMContentLoaded', async () => {
+      if (user_id) {
+        const { error } = await db
+          .from("healuLog")
+          .update({ completed_survey: true })
+          .eq("user_id", user_id);
+
+        if (error) {
+          console.error("설문 완료 상태 업데이트 실패:", error.message);
+        } else {
+          console.log("설문 완료 상태 업데이트 성공!");
+        }
+      }else {
+        console.warn("user_id가 localStorage에 없음");
+      }
+      
+    });
+
+    function goToMain() {
+      window.location.href = "main.html";
+    }
+  </script>
 </body>
 
 </html>
