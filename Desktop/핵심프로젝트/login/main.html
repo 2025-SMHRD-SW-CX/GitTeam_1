@@ -80,14 +80,35 @@
       background: #fff;
     }
 
+    @keyframes armMove {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
     .character {
+      position: relative;
       text-align: center;
+      margin-top: 10px;
+      height: 160px;
     }
 
     .character img {
       width: 160px;
-      margin-top: 5px;
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
     }
+
+    .character img.arm-down {
+      z-index: 1;
+    }
+
+    .character img.arm-mid {
+      z-index: 2;
+      animation: armMove 1.2s infinite;
+    }
+
 
     .answer-btn {
       display: block;
@@ -257,7 +278,7 @@
       width: 40px;
       height: 30px;
       margin-bottom: 4px;
-    }
+    }    
   </style>
 </head>
 
@@ -270,8 +291,9 @@
         <div class="speech-bubble">반가워! 오늘은 어땠어?</div>
       </div>
 
-      <div class="character">
-        <img src="/main_image/KakaoTalk_20250521_101344323.png" alt="캐릭터" />
+      <div class="character" style="position: relative;">
+        <img src="왼쪽새싹.png" class="arm-down" />
+        <img src="오른쪽새싹.png" class="arm-mid" />
       </div>
 
       <button class="answer-btn">답장하기</button>
@@ -279,26 +301,26 @@
       <div class="mission-box">
         <h2>일일 미션</h2>
         <div class="mission-icons">
-          <div class="icon-item"><img src="/main_image/check.png" />
+          <div class="icon-item"><img src="check.png" />
             <div>감정 체크</div>
           </div>
-          <div class="icon-item"><img src="/main_image/chat.png" />
+          <div class="icon-item"><img src="chat.png" />
             <div>AI와 채팅</div>
           </div>
-          <div class="icon-item"><img src="/main_image/alarm.png" />
+          <div class="icon-item"><img src="alarm.png" />
             <div>8시 기상</div>
           </div>
-          <div class="icon-item"><img src="/main_image/book.png" />
+          <div class="icon-item"><img src="book.png" />
             <div>한국사</div>
           </div>
-          <div class="icon-item"><img src="/main_image/schedule.png" />
+          <div class="icon-item"><img src="schedule.png" />
             <div>운동하기</div>
           </div>
         </div>
 
         <div class="status-section">
           <div class="level-card">
-            <img src="/main_image/image 12.png" alt="레벨 이미지" />
+            <img src="image 12.png" alt="레벨 이미지" />
             <div class="level-text">LV.1</div>
             <div class="progress-bar">
               <div class="progress-fill"></div>
@@ -313,25 +335,25 @@
 
     <!-- 채팅 버튼 -->
     <a href="#" class="chat-button">
-      <img src="/main_image/chat_b.png" alt="채팅" />
+      <img src="chat_b.png" alt="채팅" />
     </a>
 
     <!-- 하단 네비게이션 -->
     <div class="footer">
       <a href="#" class="footer-item">
-        <img src="/main_image/home.png" alt="홈" />
+        <img src="home.png" alt="홈" />
         <div>홈</div>
       </a>
       <a href="#" class="footer-item">
-        <img src="/main_image/community.png" alt="커뮤니티" />
+        <img src="community.png" alt="커뮤니티" />
         <div>커뮤니티</div>
       </a>
       <a href="#" class="footer-item">
-        <img src="/main_image/checkb.png" alt="감정 체크" />
+        <img src="checkb.png" alt="감정 체크" />
         <div>감정 체크</div>
       </a>
       <a href="#" class="footer-item">
-        <img src="/main_image/profile.png" alt="내 정보" />
+        <img src="profile.png" alt="내 정보" />
         <div>내 정보</div>
       </a>
     </div>

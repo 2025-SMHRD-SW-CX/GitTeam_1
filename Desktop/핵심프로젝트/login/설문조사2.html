@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>설문 화면</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body {
+            margin: 0;
+            background: #EDEDED;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+
+        .app {
+            width: 380px;
+            height: 750px;
+            background: #d8d6d6;
+            border-radius: 16px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 67px;
+            background-image: url('상단바.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            z-index: 1000;
+        }
+
+        .status-bar {
+            height: 24px;
+            background: #d8d6d6;
+        }
+
+        .logo {
+            position: absolute;
+            top: 67px;
+            left: 10px;
+            font-family: 'Jersey 20', cursive;
+            font-size: 32px;
+            line-height: 32px;
+            color: #f88b4c;
+            opacity: 0.73;
+        }
+
+        .form-container {
+            position: absolute;
+            top: 180px;
+            width: 380px;
+            height: 619px;
+            background: #FFF;
+            box-shadow: inset 0px 4px 4px rgba(0, 0, 0, 0.25);
+            border-radius: 10px;
+            padding: 20px;
+            box-sizing: border-box;
+            overflow-y: scroll;
+        }
+
+        .question {
+            margin-bottom: 24px;
+        }
+
+        .question p {
+            margin: 0 0 8px 0;
+            font-weight: bold;
+        }
+
+        .options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .submit_btn {
+            display: block;
+            margin: 40px auto;
+            padding: 8px 100px;
+            font-size: 16px;
+            background-color: #f7c1a3;
+            border: 2px solid #f7c1a3;
+            border-radius: 20px;
+            color: #000;
+            font-weight: 500;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .submit_btn:hover {
+            background-color: #faa175;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app">
+        <div class="header-image"></div>
+        <div class="status-bar"></div>
+        <div class="logo">HealU</div>
+
+        <div class="form-container">
+            <div class="question" id="q1">
+                <p>문항 1</p>
+                <p>현재 정규 학교(초/중/고등학교)에 다니고 있나요?</p>
+                <div class="options">
+                    <label><input type="radio" name="q1" value="예"> 예</label>
+                    <label><input type="radio" name="q1" value="아니요"> 아니요</label>
+                </div>
+            </div>
+
+            <div class="question" id="q2">
+                <p>문항 2</p>
+                <p>마지막으로 재학했던 학교는 어느 급(초/중/고/기타)인가요?</p>
+                <div class="options">
+                    <label><input type="radio" name="q2" value="초등학교"> 초등학교</label>
+                    <label><input type="radio" name="q2" value="중학교"> 중학교</label>
+                    <label><input type="radio" name="q2" value="고등학교"> 고등학교</label>
+                    <label><input type="radio" name="q2" value="재학중"> 재학중</label>
+                </div>
+            </div>
+
+            <div class="question" id="q3">
+                <p>문항 3</p>
+                <p>평일 오전에 주로 무엇을 하나요?</p>
+                <div class="options">
+                    <label><input type="radio" name="q3" value="학교에 등교한다"> 학교에 등교한다</label>
+                    <label><input type="radio" name="q3" value="학원/검정고시 공부"> 학원/검정고시 공부</label>
+                    <label><input type="radio" name="q3" value="일하거나 아르바이트중"> 일하거나 아르바이트중</label>
+                    <label><input type="radio" name="q3" value="쉬고있다"> 쉬고있다</label>
+                    <label><input type="radio" name="q3" value="기타"> 기타</label>
+                </div>
+            </div>
+
+            <div class="question" id="q4">
+                <p>문항 4</p>
+                <p>다음 중 이용해 본 적 있는 기관을 선택해주세요.</p>
+                <div class="options">
+                    <label><input type="radio" name="q4" value="청소년상담복지센터"> 청소년상담복지센터</label>
+                    <label><input type="radio" name="q4" value="꿈드림"> 꿈드림</label>
+                    <label><input type="radio" name="q4" value="지역 청소년 쉼터"> 지역 청소년 쉼터</label>
+                    <label><input type="radio" name="q4" value="해당 없음"> 해당 없음</label>
+                </div>
+            </div>
+
+            <div class="question" id="q5">
+                <p>문항 5</p>
+                <p>지금 가장 큰 고민은 무엇인가요?</p>
+                <div class="options">
+                    <label><input type="radio" name="q5" value="학교 생활"> 학교 생활</label>
+                    <label><input type="radio" name="q5" value="진로/직업"> 진로/직업</label>
+                    <label><input type="radio" name="q5" value="가족 문제"> 가족 문제</label>
+                    <label><input type="radio" name="q5" value="친구/인간관계"> 친구/인간관계</label>
+                    <label><input type="radio" name="q5" value="학업 중단 후 미래"> 학업 중단 후 미래</label>
+                </div>
+            </div>
+
+            <button class="submit_btn">제출하기</button>
+        </div>
+    </div>
+
+    <script>
+        const supabaseUrl = "https://fszwgldiafcffgbbtlwo.supabase.co";
+        const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZzendnbGRpYWZjZmZnYmJ0bHdvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc2ODE1NjAsImV4cCI6MjA2MzI1NzU2MH0.ZznTYaj-KNjyzZHFwm03X7J3S9XLZrHkCi10XAcQ1JI";
+        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+        const user_id = localStorage.getItem("user_id");
+
+
+        window.addEventListener("DOMContentLoaded", async () => {
+            if (!user_id) {
+                alert("로그인이 필요합니다.");
+                window.location.href = "로그인페이지.html"; // 로그인 페이지로 리디렉션
+                return;
+            }
+
+            const { data, error } = await supabase
+                .from("Survey")
+                .select("*")
+                .eq("user_id", user_id)
+                .single();
+
+            if (data) {
+                // 이미 설문 작성한 경우
+                alert("이미 설문에 응답하셨습니다.");
+                window.location.href = "main.html"; // 원하는 메인 페이지로 이동
+            }
+        });
+
+
+        document.querySelector('.submit_btn').addEventListener('click', async () => {
+            const q1 = document.querySelector('input[name="q1"]:checked');
+            const q2 = document.querySelector('input[name="q2"]:checked');
+            const q3 = document.querySelector('input[name="q3"]:checked');
+            const q4 = document.querySelector('input[name="q4"]:checked');
+            const q5 = document.querySelector('input[name="q5"]:checked');
+
+            if (!q1 || !q2 || !q3 || !q4 || !q5) {
+                alert("모든 문항에 응답해 주세요!");
+                return;
+            }
+
+            const { data, error } = await supabase.from("pre_question").insert([
+                {
+                    user_id: user_id,
+                    pre_school: q1.value,
+                    last_school: q2.value,
+                    m_rout: q3.value,
+                    last_exp: q4.value,
+                    issue: q5.value,
+                },
+            ]);
+
+            console.log("data:", data);
+            console.log("error:", error);
+
+            if (error) {
+                alert("응답 저장 실패!");
+            } else {
+                alert("설문 완료! 감사합니다.");
+                window.location.href = "설문조사3.html";
+            }
+        });
+    </script>
+</body>
+
+</html>
