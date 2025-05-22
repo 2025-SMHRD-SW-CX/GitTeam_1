@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <title>HealU 로그인</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Kakao SDK 추가 -->
+  <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.5/kakao.min.js"
+    integrity="sha384-dok87au0gKqJdxs7msEdBPNnKSRT+/mhTVzq+qOhcL464zXwvcrpjeWvyj1kCdq6"
+    crossorigin="anonymous"></script>
+  <style>
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      background-color: #FFF;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      height: 100vh;
+      padding-top: 80px;
+      margin: 0;
+    }
+
+    .app {
+      position: relative;
+      width: 380px;
+      height: 750px;
+      background: #fcfcfc;
+      border-radius: 24px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+      padding: 24px 16px;
+      box-sizing: border-box;
+      
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .logo {
+      font-family: 'Jockey One', sans-serif;
+      font-size: 48px;
+      padding: 40px 100px;
+      margin: 40px auto 20px auto;
+      color: #FFBE98;
+      /* margin-bottom: 10px; */
+      background-position: center;
+    }
+
+    .subtitle {
+      font-size: 16px;
+      color: #FFBE98;
+      margin-bottom: 50px;
+    }
+
+    .login-btn {
+      width: 226px;
+      height: 40px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 500;
+      margin: 8px 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: none;
+      opacity: 0.5;
+      pointer-events: none;
+      transition: all 0.2s ease;
+    }
+
+    .active {
+      opacity: 1;
+      pointer-events: auto;
+      cursor: pointer;
+    }
+
+    .google {
+      background: #FFF;
+      border: 1px solid #c0bcbc;
+      color: #000;
+    }
+
+    .naver {
+      background: #17ca20;
+      color: #FFF;
+    }
+
+    .kakao {
+      background: #fdeb27;
+      color: #000;
+    }
+
+    .apple {
+      background: #000000;
+      color: #FFF;
+    }
+
+    .id {
+      background: #FFBE98;
+      color: #FFF;
+    }
+
+    .btn-icon {
+      margin-right: 8px;
+      width: 18px;
+      height: 18px;
+    }
+
+    .signup {
+      margin-top: 20px;
+      font-size: 13px;
+      color: #000;
+      opacity: 0.5;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+    }
+
+    .signup::after {
+      content: '>';
+      margin-left: 6px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app">
+    <div class="logo">HealU</div>
+    <div class="subtitle">너를 위한 상담, 너만을 위한 공간</div>
+
+    <button class="login-btn google">
+      <img src="https://cdn-icons-png.flaticon.com/512/2991/2991148.png" class="btn-icon" alt="Google 로고">
+      Google 로그인
+    </button>
+
+    <button class="login-btn naver">
+      <img
+        src="https://oopy.lazyrockets.com/api/v2/notion/image?src=https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fsecure.notion-static.com%2F239ee57e-2699-4683-a02a-dcac5e0a442a%2Fnaver.png&blockId=593c9348-fd22-4bfe-93cd-a18c40c86cb7&width=256"
+        class="btn-icon" alt="Naver 로고">
+      네이버 로그인
+    </button>
+
+    <button id="btn-kakao" class="login-btn kakao active">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/e/e3/KakaoTalk_logo.svg" class="btn-icon" alt="Kakao 로고">
+      카카오 로그인
+    </button>
+
+    <button class="login-btn apple">
+      <img src="https://cdn.imweb.me/thumbnail/20220908/9ee8ddcfb5039.png" class="btn-icon" alt="Apple 로고">
+      Apple 로그인
+    </button>
+
+    <button id="btn-id" class="login-btn id active">
+      <img src="https://cdn-icons-png.flaticon.com/512/2815/2815428.png" class="btn-icon" alt="ID 아이콘">
+      아이디 로그인
+    </button>
+
+    <div id="btn-join" class="signup active">회원가입</div>
+  </div>
+  <script>
+    Kakao.init('10c8f50afeeb7f2f96d19d151f6d5da3'); // JavaScript 키로 초기화
+
+    document.getElementById('btn-kakao').addEventListener('click', function () {
+      Kakao.Auth.authorize({
+        redirectUri: 'https://www.naver.com/', // 이건 임시, 카카오 dev 설정과 일치시켜야 함
+        scope: 'profile_nickname,profile_image'
+      });
+    });
+
+    document.getElementById('btn-id').addEventListener('click', function () {
+      window.location.href = 'log_in.html';
+    });
+
+    document.getElementById('btn-join').addEventListener('click', function () {
+      window.location.href = 'agree.html';
+    });
+
+  </script>
+</body>
+
+</html>

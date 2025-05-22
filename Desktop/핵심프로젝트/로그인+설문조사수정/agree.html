@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>약관 동의</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Noto Sans KR', sans-serif;
+      background: #FFFFFF;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .app {
+      position: relative;
+      width: 380px;
+      background: #FFFFFF;
+      border-radius: 24px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+      padding: 20px 16px;
+      box-sizing: border-box;
+      height: 750px;
+    }
+
+    h2 {
+      font-size: 24px;
+      line-height: 34px;
+      letter-spacing: -0.02em;
+      color: #222;
+      margin-bottom: 24px;
+    }
+
+    .agreement-box {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: flex;
+      align-items: center;
+      margin-bottom: 12px;
+      font-size: 14px;
+      color: #333;
+    }
+
+    input[type="checkbox"] {
+      margin-right: 12px;
+      transform: scale(1.2);
+    }
+
+    .btn-next {
+      width: 100%;
+      height: 50px;
+      background-color: #ddd;
+      color: #fff;
+      font-weight: bold;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      margin-top: 30px;
+      cursor: not-allowed;
+      transition: background-color 0.3s;
+    }
+
+    .btn-next.active {
+      background-color: #000;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <h2>
+      반갑습니다!<br>
+      HeaUI 사용을 위한<br>
+      약관 동의가 필요합니다.
+    </h2>
+
+    <div class="agreement-box">
+      <label>
+        <input type="checkbox" id="agreeAll"> 네, 모두 동의합니다.
+      </label>
+      <hr style="margin: 12px 0;">
+      <label>
+        <input type="checkbox" class="agree" data-name="serviceTerms" required> 서비스 이용약관 동의 (필수)
+      </label>
+      <label>
+        <input type="checkbox" class="agree" data-name="privacyTerms" required> 개인정보 수집/이용 동의 (필수)
+      </label>
+      <label>
+        <input type="checkbox" class="agree" data-name="thirdTerms" required> 개인정보 제3자 제공 동의 (필수)
+      </label>
+      <label>
+        <input type="checkbox" class="agree" data-name="marketTerms"> 마케팅 정보 수신 동의 (선택)
+      </label>
+    </div>
+
+    <button class="btn-next" disabled>다음</button>
+
+    <script>
+      const agreeAll = document.getElementById("agreeAll");
+      const agreeChecks = document.querySelectorAll(".agree");
+      const nextBtn = document.querySelector(".btn-next");
+
+      // 전체 동의 체크 시 개별 항목 모두 반영
+      agreeAll.addEventListener("change", () => {
+        agreeChecks.forEach(box => box.checked = agreeAll.checked);
+        updateNextBtn();
+      });
+
+      // 개별 항목 클릭 시 전체 동의 체크 여부 반영
+      agreeChecks.forEach(box => {
+        box.addEventListener("change", () => {
+          const allChecked = [...agreeChecks].filter(c => c.required).every(c => c.checked);
+          agreeAll.checked = allChecked;
+          updateNextBtn();
+        });
+      });
+
+      function updateNextBtn() {
+        const requiredChecked = [...agreeChecks].filter(c => c.required).every(c => c.checked);
+        nextBtn.disabled = !requiredChecked;
+        nextBtn.classList.toggle("active", requiredChecked);
+      }
+
+      // 다음 버튼 클릭 시 동의값 저장 후 join.html로 이동
+      nextBtn.addEventListener("click", () => {
+        const agreement = {};
+        agreeChecks.forEach(c => {
+          const key = c.dataset.name;
+          agreement[key] = c.checked;
+        });
+
+        localStorage.setItem("agreements", JSON.stringify(agreement));
+        window.location.href = "join.html";
+      });
+    </script>
+  </div>
+</body>
+</html>

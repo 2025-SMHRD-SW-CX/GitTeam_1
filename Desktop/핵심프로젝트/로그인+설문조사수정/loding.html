@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <title>HealU</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+  body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Noto Sans KR', sans-serif;
+      background: #FFFFFF;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .app {
+      position: relative;
+      width: 380px;
+      max-width: 340px; /* 로그인과 동일 */
+      height: 750px;
+      background-color: #FFB999;
+      border-radius: 24px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+      text-align: center;
+      overflow: hidden;
+    }
+
+    .logo {
+      margin-top: 260px;
+      width: 137px;
+      height: 114px;
+      background-image: url('로고.png');
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .subtitle {
+      margin-top: 20px;
+      font-size: 18px;
+      color: #FFFFFF;
+      letter-spacing: -0.5px;
+    }
+
+    .footer {
+      position: absolute;
+      bottom: 40px;
+      width: 100%;
+      font-family: 'Jersey 20', sans-serif;
+      font-size: 24px;
+      color: #FEECE2;
+      text-align: center;
+    }
+    </style>
+</head>
+
+<body>
+    <div class="app">
+        <div class="container">
+            <div class="logo"></div>
+            <div class="subtitle">너를 위한 상담, 너만을 위한 공간</div>
+            <div class="footer">HealU</div>
+        </div>
+
+        <!-- 로그인 페이지로 자동 이동 -->
+        <script>
+            setTimeout(() => {
+                window.location.href = "log_view.html";
+            }, 3000);
+        </script> 
+    </div>
+</body>
+
+</html>
