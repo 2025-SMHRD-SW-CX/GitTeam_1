@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Chat App with OpenRouter</title>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <link rel="stylesheet" href="nav.css">
+  <style>
+    body {
+      margin: 0;
+      background: #EDEDED;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      font-family: 'Noto Sans KR', sans-serif;
+    }
+
+    .header-image {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 67px;
+      background-image: url('../이미지/상단바.png');
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      z-index: 1000;
+    }
+
+    .app {
+      width: 380px;
+      height: 750px;
+      background: #FFFFFF;
+      border-radius: 16px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .chat-area {
+      position: absolute;
+      top: 68px;
+      /* 상단 이미지 높이만큼 띄우기 */
+      left: 0;
+      right: 0;
+      bottom: 100px;
+      /* 하단 네비게이션 자리 */
+      padding: 10px;
+      padding-left: 50px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      font-size: 14px;
+      font-family: 'Inter', sans-serif;
+      background: #fff;
+    }
+
+    /* 공통 채팅 메시지 스타일 */
+    .chat-message {
+      max-width: 70%;
+      padding: 10px 13px;
+      border-radius: 10px;
+      word-break: break-word;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+
+    /* 사용자 메시지 - 오른쪽 정렬, 다른 색 */
+    .user-m {
+      align-self: flex-end;
+      background-color: #F7DED0;
+      color: #000;
+    }
+
+    /* 봇 메시지 - 왼쪽 정렬, 기본색 */
+    .bot-m {
+      position: relative;
+      align-self: flex-start;
+      background-color: #F1F0F0;
+      color: #333;
+    }
+
+    .bot-m::before {
+      content: '';
+      position: absolute;
+      left: -40px;
+      /* 메시지 왼쪽 바깥으로 나가게 */
+      bottom: 0;
+      width: 32px;
+      height: 32px;
+      background-image: url('../이미지/새싹이.png');
+      /* 봇 이미지 경로 */
+      background-size: cover;
+      background-position: center;
+      border-radius: 50%;
+    }
+
+    /* 입력창 */
+    .input-box {
+      position: absolute;
+      left: 60px;
+      top: 650px;
+      width: 277px;
+      height: 32px;
+      background: #F7DED0;
+      border: 1px solid #070707;
+      border-radius: 17px;
+      padding-left: 16px;
+      font-size: 12px;
+      color: #333;
+      /* placeholder 글씨 색깔과 다르게 보이게 */
+      line-height: 32px;
+      border: none;
+      outline: none;
+      box-sizing: border-box;
+    }
+
+    .input-box::placeholder {
+      color: #6d6a6a;
+      font-weight: 400;
+    }
+
+    /* 마이크 버튼 원형 */
+    .mic-circle {
+      position: absolute;
+      left: 306px;
+      top: 698px;
+      width: 32px;
+      height: 32px;
+      background: #F7DED0;
+      border-radius: 50%;
+    }
+
+    /* 마이크 아이콘 */
+    .mic-icon {
+      position: absolute;
+      left: 308px;
+      top: 700px;
+      width: 28px;
+      height: 28px;
+      background: url('mic_icon.svg') no-repeat center center;
+      background-size: contain;
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+
+<body>
+  <div class="app">
+    <div class="header-image"></div>
+    <div class="chat-area" id="chat-area"></div>
+    <input class="input-box" id="input-box" placeholder="메시지를 입력하세요..." />
+    <div class="mic-circle"></div>
+    <div class="mic-icon"></div>
+
+    <div class="nav-placeholder"></div>
+
+    <nav id="bottom-nav">
+      <a href="main1.html" class="nav-item">
+        <span class="material-icons">home</span>
+        <span class="nav-label">홈</span>
+      </a>
+      <a href="커뮤니티.html" class="nav-item active">
+        <span class="material-icons">people</span>
+        <span class="nav-label">커뮤니티</span>
+      </a>
+      <a href="test_0526.html" class="nav-item">
+        <span class="material-icons">chat</span>
+        <span class="nav-label">AI상담</span>
+      </a>
+      <a href="emo_main.html" class="nav-item">
+        <span class="material-icons">mood</span>
+        <span class="nav-label">감정체크</span>
+      </a>
+      <a href="mypage_main.html" class="nav-item">
+        <span class="material-icons">person</span>
+        <span class="nav-label">내정보</span>
+      </a>
+    </nav>
+  </div>
+
+  <script>
+    const m_chat = supabase.createClient(
+      'https://fszwgldiafcffgbbtlwo.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZzendnbGRpYWZjZmZnYmJ0bHdvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc2ODE1NjAsImV4cCI6MjA2MzI1NzU2MH0.ZznTYaj-KNjyzZHFwm03X7J3S9XLZrHkCi10XAcQ1JI'
+    );
+
+
+
+    // ------------------- 이 부분 수정 필요 user_id를 직접 쓰지 않고 전페이지에서 넘어온 user_id//
+    // ✅ 사용자 ID 동적 할당
+    const currentUserId = localStorage.getItem("user_id");
+
+    if (!currentUserId) {
+      alert("로그인이 필요합니다.");
+      throw new Error("user_id가 없습니다.");
+    }
+
+    const USER_ID = currentUserId;
+    const CURRENT_SESSION = 'sess_' + new Date().toISOString().split('T')[0] + '_' + USER_ID;
+
+    async function saveMessage(role, content) {
+      await m_chat.from('m_chat').insert([{
+        id: crypto.randomUUID(), user_id: USER_ID, session_id: CURRENT_SESSION,
+        role, content, created_at: new Date().toISOString()
+      }]);
+    }
+
+    async function getLatestEmotion(user_id) {
+      const { data, error } = await m_chat
+        .from('emotions').select('emot')
+        .eq('user_id', user_id)
+        .order('log_date', { ascending: false })
+        .limit(1).single();
+
+      if (error) {
+        console.error("감정 조회 실패:", error);
+        return null;
+      }
+      return data?.emot;
+    }
+
+    // 이거 될수도 안될수도 근데 안될듯 수정해야함//
+    // 🙋 사용자 이름 가져오기 (login 테이블)
+    async function getUserName(user_id) {
+      const { data, error } = await m_chat
+        .from('healuLog')
+        .select('name')
+        .eq('user_id', user_id)
+        .single();
+
+      return data?.name || '친구';
+    }
+
+    // 학교 내, 학교 밖 청소년 선별 사전 조사 테이블 
+    async function getUserCategory(user_id) {
+      const { data, error } = await m_chat
+        .from('pre_question')
+        .select('category')
+        .eq('user_id', user_id)
+        .single();
+
+      if (error) {
+        console.error("카테고리 조회 실패:", error);
+        return null;
+      }
+
+      return data?.category;
+    }
+
+
+
+    async function getEmotionBasedSystemPrompt(user_id) {
+      const emotion = await getLatestEmotion(user_id);
+      const name = await getUserName(user_id);
+
+
+      // prompt 부분 필요시 수정//
+      if (emotion) {
+        return {
+          role: "system",
+          content: `너의 이름은 삼. 나는 삼이 아니야. 사용자의 감정은 "${emotion}"야. 사용자의 이름은 "${name}" 이야. 이름을 맨 앞글자를 빼고 불러. 그 감정을 염두에 두고 친구처럼 다정하게 말을 걸어줘.`
+        };
+      } else {
+        return {
+          role: "system",
+          content: `너의 이름은 삼. 나는 삼이 아니야. 사용자의 이름은 "${name}" 이야. 이름을 맨 앞글자를 빼고 불러. 사용자의 감정을 모르니 가볍게 안부를 묻고 대화를 시작해줘.`
+        };
+      }
+    }
+
+    async function loadHistory() {
+      const { data, error } = await m_chat
+        .from('m_chat').select('*')
+        .eq('user_id', USER_ID)
+        .order('created_at', { ascending: true });
+
+      const chatArea = document.getElementById("chat-area");
+      chatArea.innerHTML = '';
+
+      if (error) {
+        console.error("대화 불러오기 실패", error);
+        return [];
+      }
+
+      data.forEach(msg => {
+        const msgDiv = document.createElement("div");
+        msgDiv.className = `chat-message ${msg.role === 'user' ? 'user-m' : 'bot-m'}`;
+        msgDiv.textContent = msg.content;
+        chatArea.appendChild(msgDiv);
+      });
+
+      return data;
+    }
+
+    async function fetchAIResponse(prompt, history) {
+      const formattedHistory = history.map(msg => ({
+        role: msg.role, content: msg.content
+      }));
+
+      const systemPrompt = await getEmotionBasedSystemPrompt(USER_ID);
+
+      const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Authorization": "Bearer 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",
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          model: "openai/gpt-3.5-turbo",
+          messages: [systemPrompt, ...formattedHistory, { role: "user", content: prompt }]
+        })
+      });
+
+      if (!response.ok) {
+        const errText = await response.text();
+        console.error("API 요청 실패", response.status, errText);
+        return null;
+      }
+
+      const data = await response.json();
+      return data.choices[0].message.content;
+    }
+
+    async function sendMessage(userInput) {
+      const chatArea = document.getElementById("chat-area");
+
+      const userMessage = document.createElement("div");
+      userMessage.className = "chat-message user-m";
+      userMessage.textContent = userInput;
+      chatArea.appendChild(userMessage);
+      chatArea.scrollTop = chatArea.scrollHeight;
+
+      const category = await getUserCategory(USER_ID);
+      if (category === "학교밖 청소년") {
+        await saveMessage('user', userInput);
+      }
+
+      
+        // ✅ 사용자 메시지는 무조건 저장
+        await saveMessage('user', userInput);
+
+      const history = await loadHistory();
+
+      try {
+        const reply = await fetchAIResponse(userInput, history);
+        if (!reply) return;
+
+        const botMessage = document.createElement("div");
+        botMessage.className = "chat-message bot-m";
+        botMessage.textContent = reply;
+        chatArea.appendChild(botMessage);
+        chatArea.scrollTop = chatArea.scrollHeight;
+
+        if (category === "학교밖 청소년") {
+          await saveMessage('assistant', reply);
+        }
+      } catch (error) {
+        console.error("OpenRouter 호출 중 오류 발생:", error);
+      }
+    }
+
+
+    async function startInitialBotMessage() {
+      const history = await loadHistory();
+
+      if (history.length === 0) {
+        const systemPrompt = await getEmotionBasedSystemPrompt(USER_ID);
+
+        const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            "Authorization": "Bearer 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",
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            model: "openai/gpt-3.5-turbo",
+            messages: [systemPrompt, { role: "user", content: "요즘 기분이 어때?" }]
+          })
+        });
+
+        if (!response.ok) {
+          const errText = await response.text();
+          console.error("초기 감정 메시지 실패:", response.status, errText);
+          return;
+        }
+
+        const data = await response.json();
+        const reply = data.choices[0].message.content;
+
+        const chatArea = document.getElementById("chat-area");
+        const botMessage = document.createElement("div");
+        botMessage.className = "chat-message bot-m";
+        botMessage.textContent = reply;
+        chatArea.appendChild(botMessage);
+        chatArea.scrollTop = chatArea.scrollHeight;
+
+        await saveMessage("assistant", reply);
+      }
+    }
+
+    window.addEventListener("DOMContentLoaded", async () => {
+      const inputBox = document.getElementById("input-box");
+      inputBox.addEventListener("keypress", function (e) {
+        if (e.key === "Enter" && inputBox.value.trim() !== "") {
+          const msg = inputBox.value.trim();
+          inputBox.value = "";
+          sendMessage(msg);
+        }
+      });
+
+      await loadHistory();
+      await startInitialBotMessage();
+    });
+  </script>
+</body>
+
+</html>

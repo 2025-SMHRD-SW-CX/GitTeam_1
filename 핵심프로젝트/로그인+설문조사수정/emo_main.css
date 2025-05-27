@@ -1,0 +1,574 @@
+html,
+body {
+    height: 100%;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+    background-color: #D9D9D9;
+    font-family: 'Noto Sans KR', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Gowun Dodum', 'Noto Sans KR', sans-serif;
+
+}
+
+#page-title {
+    text-align: center;
+    margin-top: 24px;
+}
+
+#page-title h2 {
+    font-size: 16px;
+    font-weight: 500;
+    margin: 0;
+    color: #222;
+}
+
+#page-title .underline {
+    margin: 20px auto 0;
+    width: 80%;
+    height: 1px;
+    background-color: #ccc;
+}
+
+#app-container {
+    width: 380px;
+    height: 750px;
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 1px 5px rgb(0 0 0 / 0.1);
+
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+}
+
+#scrollable-content {
+    flex: 1;
+    overflow-y: auto;
+    position: relative;
+    z-index: 2;
+}
+
+#scrollable-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+#scrollable-content::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+#scrollable-content::-webkit-scrollbar-thumb {
+    background-color: #D9D9D9;
+    border-radius: 20px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+    transition: background-color 0.2s;
+}
+
+#scrollable-content::-webkit-scrollbar-thumb:hover {
+    background-color: #C37D7D;
+    /* 진한 핑크 */
+}
+
+
+#calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    color: #555;
+    padding: 0 35px;
+    margin-bottom: 15px;
+    margin-top: 30px;
+    user-select: none;
+}
+
+#calendar-header button {
+    background: none;
+    border: none;
+    font-size: 16px;
+    font-weight: bold;
+    color: #555;
+    cursor: pointer;
+    width: 26px;
+    height: 26px;
+    line-height: 24px;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
+#calendar-header button:hover {
+    background-color: #f0cbcb;
+}
+
+#monthYear {
+    font-weight: 600;
+}
+
+#calendar {
+    max-width: 100%;
+    font-size: 14px;
+    flex-grow: 0;
+    z-index: 2;
+    padding: 0 18px;
+}
+
+.fc {
+    background: #fff;
+    border-radius: 6px;
+    border: none !important;
+    box-shadow: none !important;
+    margin-top: 10px;
+}
+
+.fc .fc-daygrid-day {
+    height: 26px;
+    padding: 0;
+    border: none !important;
+    cursor: pointer;
+    position: relative;
+    outline: none !important;
+}
+
+.fc .fc-daygrid-day-number {
+    font-size: 10px;
+    font-weight: 600;
+    color: #333;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    margin: 0;
+}
+
+.fc .fc-col-header-cell {
+    border: none !important;
+    background: transparent !important;
+    color: #666;
+    font-weight: 600;
+    font-size: 10px;
+    padding: 0;
+    text-align: center;
+    outline: none !important;
+}
+
+.fc-col-header {
+    margin-bottom: 2px;
+}
+
+.fc-daygrid-day.fc-day-other {
+    background: transparent;
+    pointer-events: none;
+}
+
+.fc .fc-day-today {
+    border-radius: 50% !important;
+    width: 20px !important;
+    height: 20px !important;
+    margin: auto !important;
+}
+
+
+.fc-event {
+    display: none !important;
+}
+
+.fc-daygrid-day:hover:not(:has(.emotion-icon)) {
+    background-color: #f0f0f0;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+
+/* 하단 배경 (SVG로 삼각형 포함) */
+.bottom-background-wrapper {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 433px;
+    z-index: 0;
+}
+
+.bottom-background-svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+.fc .fc-scrollgrid {
+    border: none !important;
+}
+
+/* 마지막 열/행 테두리 제거 */
+.fc-theme-standard td,
+.fc-theme-standard th {
+    border: none !important;
+}
+
+
+#growth-status {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 16px 0;
+    position: relative;
+    z-index: 2;
+    /* 삼각형 배경보다 위 */
+}
+
+#growth-status h4 {
+    margin-bottom: 15px;
+}
+
+#growth-status h6 {
+    margin-top: 0;
+}
+
+#plant-img {
+    width: 120px;
+    height: 120px;
+    object-fit: contain;
+    margin-bottom: 10px;
+}
+
+.level-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 8px;
+}
+
+.level-text {
+    font-size: 17px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+.material-icons {
+    font-size: 14px;
+    cursor: pointer;
+    color: #D9D9D9;
+}
+
+.progress-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.progress-bar {
+    width: 230px;
+    height: 10px;
+    background-color: #eee;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background-color: #5E61FF;
+    width: 0%;
+    border-radius: 4px;
+    transition: width 0.3s ease-in-out;
+}
+
+.percent-text {
+    font-size: 12px;
+    color: #333;
+    font-weight: 500;
+    font-weight: bold;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif
+}
+
+
+
+/* 하단 네비게이션 */
+#bottom-nav {
+    position: relative;
+    /* fixed → relative로 변경 */
+    width: 100%;
+    height: 60px;
+    background: #fff;
+    display: flex;
+    border-top: 1px solid #ddd;
+    box-sizing: border-box;
+    z-index: 10;
+    /* 아래 여백 주기 위해 flex-grow 대신 margin-top 사용 */
+    margin-top: auto;
+    /* 이게 핵심! #app-container 안에서 아래로 밀어붙임 */
+}
+
+
+#bottom-nav .nav-item {
+    flex: 1;
+    text-align: center;
+    color: #aaa;
+    text-decoration: none;
+    font-size: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 0;
+}
+
+#bottom-nav .nav-item .material-icons {
+    font-size: 25px;
+    margin-bottom: 2px;
+    color: #aaa;
+}
+
+/* 활성화된 메뉴 */
+#bottom-nav .nav-item.active {
+    color: #ff6b6b;
+    /* 강조 컬러 예: 진한 핑크 */
+    font-weight: 600;
+}
+
+#bottom-nav .nav-item.active .material-icons {
+    color: #ff6b6b;
+}
+
+/* 하단 네비게이션 버튼 hover */
+#bottom-nav .nav-item:hover {
+    color: #242424;
+    font-weight: 600;
+}
+
+#bottom-nav .nav-item:hover .material-icons {
+    color: #242424;
+}
+
+#circle-container {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    margin-top: 16px;
+    gap: 20px;
+    width: 180px;
+    /* 원 두 개씩 왼-오 배치 공간 확보 */
+    height: 280px;
+    /* 충분한 높이 확보 */
+}
+
+.circle {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background: #ecdfdf;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    /* 절대 위치로 좌우 번갈아 배치 */
+    z-index: 2;
+    font-weight: bold;
+    font-size: 30px;
+    color: #555;
+}
+
+.circle-label {
+    position: absolute;
+    top: 100%;
+    /* 원 바로 아래 */
+    left: 50%;
+    transform: translateX(-50%);
+    margin-top: 4px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+    font-family: 'Pokemon', sans-serif;
+    /* 아래에서 폰트 적용 */
+    user-select: none;
+}
+
+
+#growth-popup>div>div#circle-container {
+    position: relative;
+    margin: 0 auto;
+    /* 가로 중앙 정렬 */
+    width: 180px;
+    height: 280px;
+}
+
+.circle {
+    background: #ddd;
+    color: #555;
+    position: absolute;
+    /* 기존 유지 */
+}
+
+/* 첫 번째 원 색상 변경 */
+#circle-container .circle:first-child {
+    background-color: #E2BFB3;
+}
+
+/* 물음표 아이콘 색 흰색으로 */
+#circle-container .circle:nth-child(n+2) {
+    color: white;
+}
+
+/* 상세정보 아이콘 hover */
+.material-icons[title="상세 정보"]:hover {
+    color: #E2BFB3;
+    cursor: pointer;
+}
+
+/* 팝업 닫기 버튼 hover */
+#close-popup:hover {
+    color: #ff6b6b;
+    cursor: pointer;
+}
+
+/* 바텀 시트 */
+.bottom-sheet {
+    position: absolute;
+    left: 0;
+    bottom: -100%;
+    /* 처음엔 숨겨져 있음 */
+    width: 100%;
+    height: 75%;
+    /* 적절히 조정 가능 */
+    background-color: #ffffff;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.15);
+    transition: bottom 0.3s ease-in-out;
+    z-index: 10;
+}
+
+.bottom-sheet.open {
+    bottom: 0;
+    /* 슬라이드 업 */
+}
+
+
+.emotion-container {
+    padding: 20px 20px;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid #ddd;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+#popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    /* 옅은 회색 (검은색 + 투명도) */
+    z-index: 9;
+    /* 팝업 아래, 나머지 위 */
+    display: none;
+    /* 기본은 숨김 */
+}
+
+
+.emotion-title small {
+    font-weight: normal;
+    font-size: 12px;
+    color: #888;
+}
+
+.emotion-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    justify-items: center;
+}
+
+.emotion-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    transition: transform 0.2s;
+    border-radius: 50%;
+    padding: 4px;
+}
+
+.emotion-item img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+}
+
+.emotion-item span {
+    font-size: 13px;
+    margin-top: 4px;
+}
+
+.emotion-item.selected {
+    background-color: #f0f4ff;
+    transform: scale(1.1);
+    border-radius: 12px;
+}
+
+.emotion-item.selected span {
+    color: #5E61FF;
+    font-weight: bold;
+}
+
+/* showNonCurrentDates: false일 때 회색 placeholder 제거 */
+.fc-daygrid-day.fc-day-disabled {
+    background: transparent !important;
+}
+
+.highlight-count {
+    color: #5E61FF;
+    /* 파란 계열 */
+    font-weight: bold;
+    font-size: 16px;
+}
+
+/* SweetAlert2 팝업 크기 조절 */
+.swal2-popup {
+    font-size: 14px !important;
+    width: 300px !important;
+    padding-top: 5px;
+    border-radius: 12px !important;
+}
+
+.swal2-title {
+    font-size: 16px !important;
+}
+
+.swal2-html-container {
+    font-size: 14px !important;
+}
+
+.swal2-confirm {
+    font-size: 14px !important;
+    padding: 6px 14px !important;
+    border-radius: 8px !important;
+}
+
+/* info, warning, error 아이콘 내부 텍스트 줄이기 */
+.swal2-icon.swal2-warning,
+.swal2-icon.swal2-success,
+.swal2-icon.swal2-info,
+.swal2-icon.swal2-error {
+    font-size: 10px !important;
+    line-height: 45px !important;
+}
+
+#save-emotion-btn,
+#close-date-sheet {
+    transition: background 0.3s, transform 0.2s;
+}
+
+#save-emotion-btn:hover,
+#close-date-sheet:hover {
+    background: #171718;
+    transform: scale(1.07);
+}

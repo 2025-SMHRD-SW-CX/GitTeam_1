@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <title>커뮤니티 상세</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <link rel="stylesheet" href="nav.css">
+  <style>
+    body {
+      margin: 0;
+      background: #EDEDED;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      font-family: 'Noto Sans KR', sans-serif;
+    }
+
+    .app {
+      width: 380px;
+      height: 750px;
+      background: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .header-image {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 67px;
+      background-image: url('상단바1.png');
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      z-index: 1000;
+    }
+
+    .status-bar {
+      position: absolute;
+      top: 0%;
+      left: 0;
+      right: 0;
+      height: 40px;
+      background: #fff;
+    }
+
+    .header {
+      position: absolute;
+      top: 50px;
+      left: 16px;
+      right: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header-title {
+      font-weight: 600;
+      position: absolute;
+      top: 1px;
+      right: 140px;
+      font-size: 18px;
+      text-align: center;
+      flex: 1;
+    }
+
+    .category-wrapper {
+      position: absolute;
+      left: 22px;
+      top: 100px;
+    }
+
+    .category-box {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: #f5b1b1;
+      border-radius: 50px;
+      height: 30px;
+      padding: 0 12px;
+      white-space: nowrap;
+    }
+
+    .category-text {
+      font-weight: 500;
+      font-size: 13px;
+      color: #000;
+    }
+
+    .profile-img {
+      position: absolute;
+      width: 35px;
+      height: 35px;
+      left: 18px;
+      top: 140px;
+      background: #f5dada;
+      border-radius: 50%;
+    }
+
+    .profile-icon {
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      left: 21px;
+      top: 140px;
+      background: #f5dada;
+      border-radius: 50%;
+    }
+
+    .nickname {
+      position: absolute;
+      left: 69px;
+      top: 145px;
+      font-weight: 700;
+      font-size: 15px;
+      color: #000;
+    }
+
+    .post-title {
+      position: absolute;
+      left: 21px;
+      top: 190px;
+      font-weight: 700;
+      font-size: 25px;
+      color: #000;
+    }
+
+    .post-content {
+      position: absolute;
+      width: 294px;
+      left: 21px;
+      top: 245px;
+      font-weight: 500;
+      font-size: 16px;
+      color: #000;
+      line-height: 1.4;
+    }
+
+    .view-icon {
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      left: 14px;
+      top: 325px;
+    }
+
+    .view-count {
+      position: absolute;
+      left: 53px;
+      top: 329px;
+      font-size: 14px;
+      color: #525252;
+    }
+
+    .like-box {
+      position: absolute;
+      width: 100px;
+      height: 40px;
+      left: 262px;
+      top: 318px;
+      background: #FFFFFF;
+      border: 1px solid #DFD9D9;
+      border-radius: 50px;
+    }
+
+    .like-icon {
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      left: 270px;
+      top: 325px;
+    }
+
+    .like-text {
+      position: absolute;
+      left: 305px;
+      top: 329px;
+      font-size: 13px;
+      color: #212121;
+    }
+
+    .line-top {
+      position: absolute;
+      left: 0;
+      top: 368px;
+      width: 100%;
+      border-top: 1px solid #CFCDCD;
+    }
+
+    .comment-title {
+      position: absolute;
+      left: 12px;
+      top: 380px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .no-comment {
+      position: absolute;
+      width: 264px;
+      left: 58px;
+      top: 504px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #8D8D8D;
+      text-align: center;
+      line-height: 1.5;
+    }
+
+    .comment-area {
+      position: absolute;
+      top: 420px;
+      left: 12px;
+      right: 12px;
+      bottom: 80px;
+      overflow-y: auto;
+    }
+
+    .comment-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .comment-item {
+      background-color: #ffffff;
+      border: 1px solid #e0e0e0;
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 14px;
+      color: #333;
+    }
+
+    .comment-input-wrap {
+      position: absolute;
+      bottom: 10px;
+      left: 20px;
+      right: 20px;
+      display: flex;
+      gap: 8px;
+    }
+
+    #commentInput {
+      flex: 1;
+      padding: 8px 12px;
+      border-radius: 20px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+      outline: none;
+    }
+
+    #commentBtn {
+      background-color: #f5b1b1;
+      border: none;
+      color: white;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-weight: bold;
+      font-size: 14px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app">
+    <!-- 기존 게시글 구조 유지 -->
+    <div class="post-title">제목</div>
+    <div class="post-content">내용</div>
+    <div class="comment-title">댓글 0</div>
+    <div class="no-comment">아직 댓글이 없어요.<br>가장 먼저 댓글을 남겨보세요.</div>
+    <div class="comment-area">
+      <div class="comment-list" id="commentList"></div>
+    </div>
+    <div class="comment-input-wrap">
+      <input type="text" id="commentInput" placeholder="댓글을 입력해주세요" />
+      <button id="commentBtn">작성</button>
+    </div>
+  </div>
+
+  <script>
+    const client = supabase.createClient(
+      'https://fszwgldiafcffgbbtlwo.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZzendnbGRpYWZjZmZnYmJ0bHdvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc2ODE1NjAsImV4cCI6MjA2MzI1NzU2MH0.ZznTYaj-KNjyzZHFwm03X7J3S9XLZrHkCi10XAcQ1JI'
+    );
+    const urlParams = new URLSearchParams(window.location.search);
+    const postId = urlParams.get("id");
+    const commentBtn = document.getElementById("commentBtn");
+    const commentInput = document.getElementById("commentInput");
+    const commentList = document.getElementById("commentList");
+    const commentCount = document.getElementById("commentCount");
+    const noCommentMsg = document.getElementById("noCommentMsg");
+
+    async function loadPost() {
+      const { data, error } = await client
+        .from("community")
+        .select("category, title, content")
+        .eq("commu_id", postId)
+        .single();
+
+      if (data) {
+        document.querySelector(".category-text").textContent = data.category;
+        document.querySelector(".post-title").textContent = data.title;
+        document.querySelector(".post-content").innerHTML = data.content.replace(/\n/g, "<br>");
+      }
+    }
+
+    async function loadComments() {
+      const { data, error } = await client
+        .from("comments")
+        .select("com_content")
+        .eq("commu_id", postId)
+        .order("created_at", { ascending: false });
+
+      commentList.innerHTML = "";
+
+      if (data.length === 0) {
+        noComment.style.display = "block";
+        commentTitle.innerHTML = "댓글 0";
+      } else {
+        noComment.style.display = "none";
+        commentTitle.innerHTML = `댓글 ${data.length}`;
+        data.forEach(comment => {
+          const div = document.createElement("div");
+          div.className = "comment-item";
+          div.textContent = comment.com_content;
+          commentList.appendChild(div);
+        });
+      }
+    }
+
+    commentBtn.addEventListener("click", async () => {
+      const content = commentInput.value.trim();
+      const user_id = localStorage.getItem("user_id");
+
+      if (!content || !user_id) return;
+
+      const { error } = await client.from("comments").insert([
+        {
+          commu_id: postId,
+          user_id,
+          com_content: content,
+          created_at: new Date().toISOString()
+        }
+      ]);
+
+      if (!error) {
+        commentInput.value = "";
+        await loadComments();  // 새로고침 없이 화면 갱신
+      }
+    });
+
+    loadPost();
+    loadComments();
+  </script>
+</body>
+
+</html>

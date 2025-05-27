@@ -1,0 +1,234 @@
+  body {
+      margin: 0;
+      background: #EDEDED;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      font-family: 'Noto Sans KR', sans-serif;
+  }
+
+  .app {
+      width: 380px;
+      height: 750px;
+      background: #FFF;
+      border-radius: 16px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+      position: relative;
+      overflow: hidden;
+  }
+
+  .app-header {
+      width: 100%;
+      height: 50px;
+      background-color: #ffffff;
+      font-size: 20px;
+      font-weight: bold;
+      color: #000;
+      padding-left: 20px;
+      padding-top: 60px;
+      box-sizing: border-box;
+      /* border-bottom: 1px solid #ccc; */
+  }
+
+  .header-image {
+      position: absolute;
+      top: 0px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 380px;
+      height: 67px;
+      background-image: url('../이미지/상단바.png');
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      z-index: 1000;
+  }
+
+
+  .category-wrapper {
+      position: absolute;
+      top: 162px;
+      left: 8px;
+      display: flex;
+      gap: 27px;
+      /* border-bottom: 1px solid #ccc; */
+  }
+
+
+  .category-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+  }
+
+  .circle {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: #D9D9D9;
+      /* 원하는 색으로 바꿔도 돼요 */
+  }
+
+  .label {
+      margin-top: 12px;
+      text-align: center;
+      font-size: 13px;
+      color: #333;
+
+  }
+
+
+  /* 검색창 */
+  .search-bar {
+      position: absolute;
+      top: 98px;
+      left: 9px;
+      width: 340px;
+      height: 35px;
+      background: #D9D9D9;
+      border-radius: 3px;
+      display: flex;
+      align-items: center;
+      padding: 0 10px;
+      gap: 8px;
+      border: none;
+  }
+
+
+  /* 카테고리 아이콘 */
+  .category-section {
+      position: absolute;
+      top: 162px;
+      left: 26px;
+      display: flex;
+      gap: 20px;
+  }
+
+  .category {
+      text-align: center;
+  }
+
+  .circle {
+      width: 50px;
+      height: 50px;
+      background: #D9D9D9;
+      border-radius: 50%;
+      opacity: 0.5;
+      margin: 0 auto;
+  }
+
+  /* 카테고리 라벨 */
+  .category-label {
+      margin-top: 5px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+      color: #000000;
+  }
+
+  /* 카드 */
+  .post-card {
+      position: relative;
+      width: 312px;
+      height: 133px;
+      background: #FFFFFF;
+      box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+      margin: 0 auto;
+      margin-top: 20px;
+      padding: 10px 16px;
+      box-sizing: border-box;
+  }
+
+  .post-meta {
+      font-family: 'ADLaM Display', sans-serif;
+      font-size: 11px;
+      color: #4A4A4A;
+      margin-bottom: 5px;
+  }
+
+  .post-title {
+      font-weight: 900;
+      font-size: 11px;
+      color: #000000;
+      margin-bottom: 5px;
+  }
+
+  .post-content {
+      font-weight: 300;
+      font-size: 10px;
+      color: #000000;
+      opacity: 0.5;
+      line-height: 1.2;
+      height: 36px;
+      overflow: hidden;
+  }
+
+  .post-footer {
+      position: absolute;
+      bottom: 8px;
+      left: 16px;
+      right: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+  }
+
+  .post-footer .info {
+      font-size: 11px;
+      color: #878787;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+  }
+
+  .post-footer img {
+      width: 16px;
+      height: 16px;
+  }
+
+  /* 플로팅 버튼 */
+  .floating-button {
+      position: absolute;
+      width: 58px;
+      height: 58px;
+      left: 288px;
+      top: 651px;
+      background: #FF7474;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+  }
+
+  .floating-button img {
+      width: 35px;
+      height: 35px;
+  }
+
+  /* 하단 네비게이션 */
+  .bottom-nav {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 60px;
+      border-top: 1px solid #ccc;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      font-size: 10px;
+      z-index: 10;
+  }
+
+  .bottom-nav div {
+      text-align: center;
+  }
+
+  .bottom-nav img {
+      width: 24px;
+      height: 24px;
+      display: block;
+      margin: 0 auto 2px;
+  }

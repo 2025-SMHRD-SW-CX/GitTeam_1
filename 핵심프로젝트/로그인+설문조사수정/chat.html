@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="dkss">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI_상담</title>
+    <link rel="stylesheet" href="chat.css">
+    <link rel="stylesheet" href="nav.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+</head>
+<body>
+  <div class="app">
+     <!-- 헤더 이미지 -->
+  <div class="header-image"></div> 
+
+  <!-- 채팅 영역  -->
+  <div class="app">
+  <div class="chat-area">
+    </div>
+
+    <!-- 입력창과 마이크 -->
+ <input
+  type="text"
+  class="input-box"
+  placeholder="메세지를 입력하세요."
+/>
+    <div class="mic-circle"></div>
+    <div class="mic-icon"></div>
+
+  <!-- 네비게이션 -->
+    <div class="nav-placeholder"></div>
+    <nav id="bottom-nav">
+  <nav id="bottom-nav">
+    <a href="main1.html" class="nav-item">
+      <span class="material-icons">home</span>
+      <span class="nav-label">홈</span>
+    </a>
+    <a href="커뮤니티.html" class="nav-item">
+      <span class="material-icons">people</span>
+      <span class="nav-label">커뮤니티</span>
+    </a>
+    <a href="test_0526.html" class="nav-item active">
+      <span class="material-icons">chat</span>
+      <span class="nav-label">AI상담</span>
+    </a>
+    <a href="emo_main.html" class="nav-item">
+      <span class="material-icons">mood</span>
+      <span class="nav-label">감정체크</span>
+    </a>
+    <a href="mypage_main.html" class="nav-item">
+      <span class="material-icons">person</span>
+      <span class="nav-label">내정보</span>
+    </a>
+    </nav>
+
+  </div>
+  </div>
+   
+
+  </div>
+
+
+  <script src="chat.js"></script>
+  <script src="첫대화.js"></script>
+  <script>
+    // 채팅 내역 불러오기 
+     const load_content = async () => {
+      const { data, error } = await db
+          .from("ai_chat")
+          .select("*")
+          .eq("user_id", "test")
+          .order("user_id", { ascending: false });
+            if (error) {
+          alert("게시글 불러오기에 실패했습니다.");
+          return;
+        }
+        // 과거 내역 불러오는 창
+          const tbody = document.querySelector(".chat-area");
+          tbody.innerHTML = "";
+         data.forEach((user) => { 
+           const tr = document.createElement("div");
+           tr.setAttribute("class","chat-message user-m")
+              tr.innerHTML = `
+                ${user.user_message}
+              `;
+             tbody.appendChild(tr)
+             
+            const bot_tr = document.createElement("div");
+             bot_tr.setAttribute("class","chat-message bot-m");
+
+              bot_tr.innerHTML=`
+                  ${user.bot_message}
+              `;
+                tbody.appendChild(bot_tr);
+        });
+      };
+
+
+      window.onload = load_content;
+  </script>
+</body>
+</html>
