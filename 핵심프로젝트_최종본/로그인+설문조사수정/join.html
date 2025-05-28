@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <title>회원가입</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Noto Sans KR', sans-serif;
+            background: #FFFFFF;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .app {
+            position: relative;
+            width: 380px;
+            background: #FFFFFF;
+            border-radius: 16px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+            padding: 20px 16px;
+            box-sizing: border-box;
+            height: 750px;
+        }
+
+        .container {
+            width: 90%;
+            margin: auto;
+        }
+
+        .field-group {
+            margin-bottom: 16px;
+        }
+
+        .field-label {
+            font-weight: 700;
+            font-size: 12px;
+            margin-bottom: 4px;
+            margin: 0 auto;
+        }
+
+        .field-input {
+            width: 100%;
+            height: 30px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 0 8px;
+            font-size: 13px;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 4px;
+        }
+
+        .radio-group label {
+            font-size: 12px;
+            color: #333;
+        }
+
+        .submit-btn {
+            margin-top: 60px;
+            width: 100%;
+            height: 50px;
+            background-color: #000;
+            color: #fff;
+            border: none;
+            font-weight: bold;
+            font-size: 15px;
+            cursor: pointer;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+
+<body>
+    <div class="app">
+        <div class="container" id="signup-container"></div>
+    
+        <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js" ></script>
+        <!-- <script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.1.6.js"></script> -->
+        
+        <script>
+
+            const supabaseUrl = "https://fszwgldiafcffgbbtlwo.supabase.co";
+            const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZzendnbGRpYWZjZmZnYmJ0bHdvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc2ODE1NjAsImV4cCI6MjA2MzI1NzU2MH0.ZznTYaj-KNjyzZHFwm03X7J3S9XLZrHkCi10XAcQ1JI";
+            const db = supabase.createClient(supabaseUrl, supabaseKey);
+
+            const container = document.getElementById('signup-container');
+
+            // 필드 생성 함수
+            function createField(labelText, inputType = 'text', placeholder = '') {
+                const group = document.createElement('div');
+                group.className = 'field-group';
+
+                const label = document.createElement('div');
+                label.className = 'field-label';
+                label.innerText = labelText;
+
+                const input = document.createElement('input');
+                input.className = 'field-input';
+                input.type = inputType;
+                input.placeholder = placeholder;
+
+                group.appendChild(label);
+                group.appendChild(input);
+                return group;
+            }
+
+            // 필드 추가
+            container.appendChild(createField('아이디*', 'text', '아이디 입력'));               // [0]
+            container.appendChild(createField('비밀번호*', 'password', '8~16자 영문+숫자'));    // [1]
+            container.appendChild(createField('비밀번호 확인*', 'password', '비밀번호 확인'));   // [2]
+            container.appendChild(createField('이름*', 'text', '이름 입력'));                   // [3]
+            container.appendChild(createField('이메일', 'email', 'example@example.com'));      // [4]
+            container.appendChild(createField('휴대폰*', 'tel', '010-1234-5678'));              // [5]
+            container.appendChild(createField('주소', 'text', '주소 입력'));                    // [6]
+            container.appendChild(createField('생년월일', 'text', 'YYYY-MM-DD'));              // [7]
+            // container.appendChild(createField('닉네임', 'nick', '닉네임 입력'));
+            // 성별
+            const genderGroup = document.createElement('div');
+            genderGroup.className = 'field-group';
+            const genderLabel = document.createElement('div');
+            genderLabel.className = 'field-label';
+            genderLabel.innerText = '성별';
+
+            const radioContainer = document.createElement('div');
+            radioContainer.className = 'radio-group';
+            ['남자', '여자', '선택 안함'].forEach(text => {
+                const label = document.createElement('label');
+                const radio = document.createElement('input');
+                radio.type = 'radio';
+                radio.name = 'gender';
+                radio.value = text;
+                label.appendChild(radio);
+                label.appendChild(document.createTextNode(' ' + text));
+                radioContainer.appendChild(label);
+            });
+            genderGroup.appendChild(genderLabel);
+            genderGroup.appendChild(radioContainer);
+            container.appendChild(genderGroup);
+
+            // 가입 버튼
+            const submitBtn = document.createElement('button');
+            submitBtn.className = 'submit-btn';
+            submitBtn.innerText = '회원가입';
+            container.appendChild(submitBtn);
+
+            // 가입 처리
+            submitBtn.addEventListener('click', async () => {
+                const inputs = document.querySelectorAll('.field-input');
+                const gender = document.querySelector('input[name="gender"]:checked');
+
+                const user_id = inputs[0].value;
+                const password = inputs[1].value;
+                const passwordCheck = inputs[2].value;
+                const name = inputs[3].value;
+                const email = inputs[4].value;
+                const phone = inputs[5].value;
+                const address = inputs[6].value;
+                const birth = inputs[7].value;
+                // const nicknm = inputs[8].value;
+
+                // 1. 비밀번호 확인
+                if (password !== passwordCheck) {
+                    alert("비밀번호가 일치하지 않습니다.");
+                    return;
+                }
+
+                // 2. 생년월일 포맷 체크
+                if (birth && !/^\d{4}-\d{2}-\d{2}$/.test(birth)) {
+                    alert("생년월일은 YYYY-MM-DD 형식이어야 합니다.");
+                    return;
+                }
+
+                // 2-2. 약관 동의 정보 가져오기
+                const agreement = JSON.parse(localStorage.getItem("agreements") || "{}");
+
+                // 3. DB에 저장
+                const { data, error } = await db.from('healuLog').insert([{
+                    user_id,
+                    password,
+                    name,
+                    email,
+                    phone,
+                    address,
+                    gender: gender ? gender.value : null,
+                    birth: birth || null,
+                    // nicknm,
+                    create_at: new Date().toISOString(),
+                }]);
+                if (error) {
+                    alert("가입 실패: " + error.message);
+                    console.error(error);
+                } else {
+                    console.log(data);
+
+                }
+
+                const { error: agreeError } = await db.from('agreement').insert([{
+                    user_id,
+                    serviceTerms: agreement.serviceTerms || false,
+                    privacyTerms: agreement.privacyTerms || false,
+                    thirdTerms: agreement.thirdTerms || false,
+                    marketTerms: agreement.marketTerms || false,
+                }]);
+
+                if (agreeError) {
+                    alert("약관 저장 실패: " + agreeError.message);
+                    console.error(agreeError);
+                    return;
+                } else {
+                    // 둘 다 성공했을 때만!
+                    alert("회원가입이 완료되었습니다!");
+                    localStorage.removeItem("agreements");
+                    window.location.href = "log_in.html";
+                }
+            });
+        </script>
+    </div>
+</body>
+
+</html>

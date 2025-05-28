@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>상담 예약하기</title>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.17/main.min.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.17/index.global.min.js"></script>
+  <link rel="stylesheet" href="nav.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <style>
+    body {
+      margin: 0;
+      background: #EDEDED;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      font-family: 'Noto Sans KR', sans-serif;
+    }
+
+    .app {
+      width: 380px;
+      height: 750px;
+      background: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .header-image {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 67px;
+      background-image: url('../이미지/상단바.png');
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      z-index: 1000;
+    }
+
+    .header {
+      position: absolute;
+      top: 50px;
+      left: 16px;
+      right: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header-title {
+      font-weight: 600;
+      position: absolute;
+      top: 5px;
+      right: 125px;
+      font-size: 18px;
+      text-align: center;
+      flex: 1;
+    }
+
+    /* .top-bar::before {
+      content: "⬅️";
+      font-size: 20px;
+      margin-right: 10px;
+    } */
+
+    #calendar {
+      margin-top: 140px;
+      font-size: 14px;
+      transition: filter 0.3s ease;
+    }
+
+    .divider {
+      border-top: 1px solid #ddd;
+      margin: 20px 0;
+    }
+
+    .time-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .time-button {
+      padding: 8px 14px;
+      border: 1px solid #bbb;
+      border-radius: 20px;
+      font-size: 14px;
+      background: #fff;
+      cursor: pointer;
+    }
+
+    .time-button.disabled {
+      opacity: 0.3;
+      pointer-events: none;
+    }
+
+    .time-button.selected {
+      background: #f59d9d;
+      color: white;
+    }
+
+    .reserve-button {
+      width: 100%;
+      background: #F8AFA6;
+      border: 1px solid #C37D7D;
+      color: white;
+      font-size: 20px;
+      font-weight: bold;
+      padding: 5px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .reserve-button.disabled {
+      background: #ccc;
+      border-color: #aaa;
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+
+    .reserve-button:not(.disabled):hover {
+      background: #f59d9d;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .modal-slide {
+      position: fixed;
+      left: 50;
+      bottom: -100%;
+      width: 348px;
+      max-width: 380px;
+      height: 66vh;
+      background: #fff;
+      box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
+      border-top-left-radius: 20px;
+      border-top-right-radius: 20px;
+      z-index: 1000;
+      transition: bottom 0.4s ease;
+      padding: 16px;
+      overflow-y: auto;
+    }
+
+    .modal-slide.active {
+      bottom: 0;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 12px;
+      right: 20px;
+      font-size: 20px;
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+
+    .counselor-card {
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: 12px;
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .counselor-card img {
+      width: 50px;
+      height: 50px;
+    }
+
+    .counselor-card button {
+      margin-top: 8px;
+      padding: 6px 12px;
+      border: 1px solid #C37D7D;
+      background-color: transparent;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .swal2-popup {
+      font-size: 14px !important;
+      width: 300px !important;
+      padding-top: 5px;
+      border-radius: 12px !important;
+    }
+
+    .swal2-title {
+      font-size: 16px !important;
+    }
+
+    .swal2-html-container {
+      font-size: 14px !important;
+    }
+
+    .swal2-confirm {
+      font-size: 14px !important;
+      padding: 6px 14px !important;
+      border-radius: 8px !important;
+    }
+
+    /* info, warning, error 아이콘 내부 텍스트 줄이기 */
+    .swal2-icon.swal2-warning,
+    .swal2-icon.swal2-success,
+    .swal2-icon.swal2-info,
+    .swal2-icon.swal2-error {
+      font-size: 10px !important;
+      line-height: 45px !important;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app">
+    <div class="header-image"></div>
+    <!-- <span style="cursor:pointer; position: absolute; top: 40px; font-size: 28px; font-weight: bold; color: #333;"
+      onclick="history.back()">←</span>
+    <div class="header-title">상담 예약하기</div> -->
+
+    <div class="header">
+      <span style="cursor:pointer; font-size: 28px; font-weight: bold; color: #333;" onclick="history.back()">←</span>
+      <div class="header-title">상담 예약하기</div>
+      <span style="width: 20px;"></span>
+    </div>
+
+    <button id="view-reservations-btn" style="
+            position: absolute;
+            top: 90px;
+            left: 70px;
+            right: 70px;
+            font-size: 16px;
+            padding: 5px;
+            background: #fff;
+            border: 1px solid #ccc;
+            border-radius: 20px;
+            cursor: pointer;
+  ">
+      상담예약 상세보기
+    </button>
+
+    <div id="calendar"></div>
+    <div class="divider"></div>
+
+    <div id="time-section" class="hidden">
+      <div class="time-buttons">
+        <div class="time-button">10:00</div>
+        <div class="time-button">10:30</div>
+        <div class="time-button">11:00</div>
+        <div class="time-button">11:30</div>
+        <div class="time-button">13:00</div>
+        <div class="time-button">13:30</div>
+        <div class="time-button">14:00</div>
+        <div class="time-button disabled">15:00</div>
+        <div class="time-button disabled">16:00</div>
+      </div>
+      <button class="reserve-button disabled" id="reserve-btn">예약 하기</button>
+    </div>
+
+    <!-- 상담사 선택 모달  
+-------------------- 수정 및 추가 ---------------------------------------------
+     상담사 정보 수정하라면 해야함-->
+
+
+    <div id="counselor-modal" class="modal-slide">
+      <button class="modal-close" onclick="closeModal()">✖</button>
+      <h3>상담사 선택하기</h3>
+      <div class="counselor-card">
+        <img src="counsel_image/상담사1.png" alt="상담사" />
+        <p><strong>상담사 김하늘</strong><br />경력: 3년<br />만족도: 97%<br /> 상담소: 광주 서구</p>
+        <button data-id="1" data-name="김하늘" data-location="광주 서구" data-center="힐유상담소">선택하기</button>
+      </div>
+      <div class="counselor-card">
+        <img src="counsel_image/상담사2.png" alt="상담사" />
+        <p><strong>상담사 이우주</strong><br />경력: 5년<br />만족도: 92%<br /> 상담소위치: 광주 북구<br />상담소 이름: 힐유상담소</p>
+        <button data-id="2" data-name="이우주" data-location="광주 북구" data-center="유자상담소">선택하기</button>
+      </div>
+    </div>
+
+    <div class="nav-placeholder"></div>
+
+    <nav id="bottom-nav">
+      <a href="main1.html" class="nav-item">
+        <span class="material-icons">home</span>
+        <span class="nav-label">홈</span>
+      </a>
+      <a href="커뮤니티.html" class="nav-item active">
+        <span class="material-icons">people</span>
+        <span class="nav-label">커뮤니티</span>
+      </a>
+      <a href="test_0526.html" class="nav-item">
+        <span class="material-icons">chat</span>
+        <span class="nav-label">AI상담</span>
+      </a>
+      <a href="emo_main.html" class="nav-item">
+        <span class="material-icons">mood</span>
+        <span class="nav-label">감정체크</span>
+      </a>
+      <a href="mypage_main.html" class="nav-item">
+        <span class="material-icons">person</span>
+        <span class="nav-label">내정보</span>
+      </a>
+    </nav>
+  </div>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <script>
+    const supabaseClient = supabase.createClient(
+      'https://fszwgldiafcffgbbtlwo.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZzendnbGRpYWZjZmZnYmJ0bHdvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc2ODE1NjAsImV4cCI6MjA2MzI1NzU2MH0.ZznTYaj-KNjyzZHFwm03X7J3S9XLZrHkCi10XAcQ1JI'
+    );
+
+    let selectedDate = null;
+    let selectedTime = null;
+    let selectedCounselorId = null;
+    let selectedCounselorName = null;
+    let selectedLocation = null;
+    let selectedCenterName = null;
+
+    document.addEventListener('DOMContentLoaded', function () {
+      (async () => {
+        /* 
+        const { data: loginData, error: loginError } = await supabaseClient
+          .from('healuLog')
+          .select('user_id')
+          .order('id', { ascending: false })
+          .limit(1)
+          .single();
+
+        if (loginError || !loginData) {
+          alert("로그인 정보를 불러올 수 없습니다.");
+          return;
+        }
+
+
+        user_id 부분이긴 한데 login 부터 오면 될수도 있음 
+        현재 이 페이지 먼저 열어서 그런듯
+
+
+        const currentUserId = loginData.user_id; */
+        const currentUserId = localStorage.getItem("user_id");
+        const calendarEl = document.getElementById('calendar');
+        const timeSection = document.getElementById('time-section');
+        const modal = document.getElementById('counselor-modal');
+        const reserveBtn = document.getElementById('reserve-btn');
+
+        const calendar = new FullCalendar.Calendar(calendarEl, {
+          initialView: 'dayGridMonth',
+          headerToolbar: { left: 'prev', center: 'title', right: 'next' },
+          selectable: true,
+          eventOverlap: true, // 이벤트 겹침 허용
+          dateClick: function (info) {
+            const clickedDate = new Date(info.dateStr);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            if (clickedDate < today) {
+              alert("이전 날짜는 선택할 수 없습니다.");
+              selectedDate = null;
+              return;
+            }
+            selectedDate = info.dateStr;
+            timeSection.classList.remove('hidden');
+          }
+        });
+        calendar.render();
+
+        // 예약 정보 불러오기
+        const { data: reservations, error: fetchError } = await supabaseClient
+          .from('counsel')
+          .select('*')
+          .eq('user_id', currentUserId);
+
+        if (fetchError) {
+          console.error('예약 정보 불러오기 실패:', fetchError.message);
+        } else if (reservations) {
+          reservations.forEach(reservation => {
+            calendar.addEvent({
+              title: '상담 예약',
+              start: `${reservation.res_date}T${reservation.res_time}`,
+              allDay: false
+            });
+          });
+        }
+
+
+        document.getElementById('view-reservations-btn').addEventListener('click', () => {
+          window.location.href = 'cmap.html'; // 원하는 상세보기 페이지 URL로 바꾸세요
+        });
+
+
+        document.querySelectorAll('.time-button:not(.disabled)').forEach(btn => {
+          btn.addEventListener('click', () => {
+            document.querySelectorAll('.time-button').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            selectedTime = btn.textContent;
+            modal.classList.add('active');
+          });
+        });
+
+        document.querySelectorAll('.counselor-card button').forEach(button => {
+          button.addEventListener('click', () => {
+            selectedCounselorId = parseInt(button.dataset.id);
+            selectedCounselorName = button.dataset.name;
+            selectedLocation = button.dataset.location;
+            selectedCenterName = button.dataset.center;
+            closeModal();
+            if (selectedTime && selectedDate) reserveBtn.classList.remove('disabled');
+          });
+        });
+
+        reserveBtn.addEventListener('click', async () => {
+          if (reserveBtn.classList.contains('disabled')) return;
+          reserveBtn.classList.add('disabled');
+          reserveBtn.textContent = "처리 중...";
+
+          try {
+            const resTimeStr = selectedTime.length === 5 ? `${selectedTime}:00` : selectedTime;
+            const { error } = await supabaseClient.from('counsel').insert([{
+              res_id: crypto.randomUUID(),
+              user_id: currentUserId,
+              counselor_id: selectedCounselorId,
+              counselor_name: selectedCounselorName,
+              res_date: selectedDate,
+              res_time: resTimeStr,
+              status: '예약',
+              location: selectedLocation,
+              center_name: selectedCenterName,
+              counsel_cretime: new Date().toISOString()
+            }]);
+
+            if (error) throw error;
+
+            calendar.addEvent({
+              title: '상담 예약',
+              start: `${selectedDate}T${resTimeStr}`,
+              allDay: false
+            });
+
+            reserveBtn.classList.remove('disabled');
+            reserveBtn.textContent = "예약 하기";
+
+            await Swal.fire({
+              icon: 'success',
+              title: '예약 완료! 🎉',
+              text: '상담 예약이 확정되었어요!',
+              confirmButtonColor: '#5E61FF',
+              allowOutsideClick: false,
+              backdrop: true,
+              heightAuto: false
+            });
+
+            window.location.href = `cmap.html`; // 상세 페이지로 이동
+
+          } catch (e) {
+            await Swal.fire({
+              icon: 'warning',
+              title: '예약 실패',
+              text: e.message,
+              confirmButtonText: '확인',
+              confirmButtonColor: '#d33',
+              allowOutsideClick: false,
+              backdrop: true,
+              heightAuto: false
+            });
+            reserveBtn.classList.remove('disabled');
+            reserveBtn.textContent = "예약 하기";
+          }
+
+        });
+      })();
+    });
+
+    function closeModal() {
+      document.getElementById('counselor-modal').classList.remove('active');
+    }
+  </script>
+</body>
+
+</html>

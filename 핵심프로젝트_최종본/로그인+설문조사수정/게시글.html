@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>커뮤니티 글쓰기</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="nav.css">
+    <style>
+        body {
+            margin: 0;
+            background: #EDEDED;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+
+        .app {
+            width: 380px;
+            height: 750px;
+            background: #FFFFFF;
+            border-radius: 16px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 67px;
+            background-image: url('../이미지/상단바.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            z-index: 1000;
+        }
+
+        .container {
+            position: relative;
+            width: 375px;
+            height: 812px;
+            margin: 0 auto;
+            border: 1px solid #ccc;
+        }
+
+        .status-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 24px;
+        }
+
+        .header {
+            position: absolute;
+            top: 50px;
+            left: 16px;
+            right: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-title {
+            font-weight: 600;
+            position: absolute;
+            top: 1px;
+            right: 140px;
+            font-size: 18px;
+            text-align: center;
+            flex: 1;
+        }
+
+        .select-topic {
+            position: absolute;
+            top: 90px;
+            left: 20px;
+            right: 20px;
+            font-size: 16px;
+            padding: 10px;
+            background: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .dropdown {
+            display: none;
+            position: absolute;
+            top: 140px;
+            left: 20px;
+            width: calc(100% - 40px);
+            background: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            z-index: 10;
+        }
+
+        .dropdown-item {
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        .dropdown-item:hover {
+            background-color: #f5f5f5;
+        }
+
+        .warning-box {
+            position: absolute;
+            top: 140px;
+            left: 20px;
+            right: 20px;
+            background-color: #FBEED8;
+            border-radius: 2px;
+            padding: 10px;
+            font-size: 12px;
+            font-weight: bold;
+            color: #FF963B;
+        }
+
+        .warning-box .close {
+            position: absolute;
+            top: 5px;
+            /* left: 20px; */
+            right: 10px;
+            color: #FEAC62;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+
+        #titleInput {
+            position: absolute;
+            top: 210px;
+            left: 20px;
+            right: 20px;
+            height: 35px;
+            font-size: 16px;
+            padding: 5px 10px;
+            background-color: #fcfcfc;
+            border: 2px solid #e49b9b;
+            border-radius: 10px;
+            box-sizing: border-box;
+        }
+
+        .text-area {
+            position: absolute;
+            top: 260px;
+            left: 20px;
+            right: 20px;
+            height: 360px;
+            border: none;
+            font-size: 16px;
+            color: #000;
+            background-color: #dbdbdb;
+            padding: 10px;
+            resize: none;
+        }
+
+        #saveBtn {
+            position: absolute;
+            bottom: 65px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 340px;
+            height: 40px;
+            background-color: #e49b9b;
+            color: white;
+            text-align: center;
+            line-height: 40px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            z-index: 100;
+        }
+
+        .footer {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer .left {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            font-size: 16px;
+        }
+
+        .footer .button {
+            width: 65px;
+            height: 33px;
+            border-radius: 5px;
+            font-size: 13px;
+            text-align: center;
+            line-height: 33px;
+            cursor: pointer;
+        }
+
+        .temp-btn {
+            background-color: #B5B0B0;
+            color: #fff;
+        }
+
+        .post-btn {
+            background-color: #F6D3D3;
+            color: #000;
+        }
+
+        /* SweetAlert2 팝업 크기 조절 */
+        .swal2-popup {
+            font-size: 14px !important;
+            width: 300px !important;
+            padding-top: 5px;
+            border-radius: 12px !important;
+        }
+
+        .swal2-title {
+            font-size: 16px !important;
+        }
+
+        .swal2-html-container {
+            font-size: 14px !important;
+        }
+
+        .swal2-confirm {
+            font-size: 14px !important;
+            padding: 6px 14px !important;
+            border-radius: 8px !important;
+        }
+
+        /* info, warning, error 아이콘 내부 텍스트 줄이기 */
+        .swal2-icon.swal2-warning,
+        .swal2-icon.swal2-success,
+        .swal2-icon.swal2-info,
+        .swal2-icon.swal2-error {
+            font-size: 10px !important;
+            line-height: 45px !important;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app">
+        <div class="header-image"></div>
+        <div class="container">
+            <div class="status-bar"></div>
+
+            <div class="header">
+                <span style="cursor:pointer; font-size: 28px; font-weight: bold; color: #333;"
+                    onclick="history.back()">←</span>
+                <div class="header-title">커뮤니티</div>
+                <span style="width: 20px;"></span>
+            </div>
+
+            <div class="select-topic" id="selectTopicBtn">
+                게시글의 주제를 선택해주세요.▼
+            </div>
+
+
+            <div class="dropdown" id="topicDropdown">
+                <div class="dropdown-item" data-value="대인관계">대인관계</div>
+                <div class="dropdown-item" data-value="친구">친구</div>
+                <div class="dropdown-item" data-value="가족">가족</div>
+                <div class="dropdown-item" data-value="학업/진로">학업/진로</div>
+                <div class="dropdown-item" data-value="학교">학교</div>
+            </div>
+
+
+            <div class="warning-box">
+                <div>글 작성하기 전에 알려드려요.</div>
+                <div>욕설이나 누군가가 특정되는 글을 올릴 수 없어요.</div>
+                <div>커뮤니티의 글은 상담사 분들 수시로 모니터링 하고 있어요.</div>
+                <div class="close">X</div>
+            </div>
+
+            <input type="text" id="titleInput" placeholder="제목을 입력해주세요."
+                style="position: absolute; top: 220px; left: 20px; right: 20px; height: 35px; font-size: 16px; padding: 5px 10px; border:2px solid #e49b9b;; background-color: #fcfcfc; border-radius: 10px; box-sizing: border-box;" />
+
+            <textarea id="contentInput" class="text-area" placeholder="당신의 이야기를 써주세요."></textarea>
+
+            <div class="footer">
+                <div class="left">
+                    <img src="icon_image.png" alt="image" width="24" height="24" />
+                    <div>0/10</div>
+                    <img src="icon_link.png" alt="link" width="24" height="24" />
+                    <div>0/10</div>
+                </div>
+                <div class="button temp-btn">임시저장</div>
+                <div class="button post-btn">포스팅</div>
+            </div>
+        </div>
+        <div id="saveBtn"
+            style="position: absolute; bottom: 65px; left: 50%; transform: translateX(-50%); width: 340px; height: 40px; background-color: #e49b9b; color: white; text-align: center; line-height: 40px; border-radius: 8px; cursor: pointer; font-weight: bold; z-index: 2000;">
+            저장하기
+        </div>
+        <div class="nav-placeholder"></div>
+
+        <nav id="bottom-nav">
+            <a href="main1.html" class="nav-item">
+                <span class="material-icons">home</span>
+                <span class="nav-label">홈</span>
+            </a>
+            <a href="커뮤니티.html" class="nav-item active">
+                <span class="material-icons">people</span>
+                <span class="nav-label">커뮤니티</span>
+            </a>
+            <a href="test_0526.html" class="nav-item">
+                <span class="material-icons">chat</span>
+                <span class="nav-label">AI상담</span>
+            </a>
+            <a href="emo_main.html" class="nav-item">
+                <span class="material-icons">mood</span>
+                <span class="nav-label">감정체크</span>
+            </a>
+            <a href="mypage_main.html" class="nav-item">
+                <span class="material-icons">person</span>
+                <span class="nav-label">내정보</span>
+            </a>
+        </nav>
+
+
+    </div>
+
+    <script>
+        const supabase = window.supabase.createClient(
+            "https://fszwgldiafcffgbbtlwo.supabase.co",
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZzendnbGRpYWZjZmZnYmJ0bHdvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc2ODE1NjAsImV4cCI6MjA2MzI1NzU2MH0.ZznTYaj-KNjyzZHFwm03X7J3S9XLZrHkCi10XAcQ1JI"
+        );
+
+        const user_id = localStorage.getItem("user_id");
+        const selectTopicBtn = document.getElementById("selectTopicBtn");
+        const dropdown = document.getElementById("topicDropdown");
+        const titleInput = document.getElementById("titleInput");
+        const contentInput = document.getElementById("contentInput");
+        const saveBtn = document.getElementById("saveBtn");
+
+        let selectedCategory = null;
+
+        // 주제 드롭다운 열기
+        selectTopicBtn.addEventListener("click", () => {
+            dropdown.style.display = dropdown.style.display === "none" ? "block" : "none";
+        });
+
+        // 주제 선택
+        document.querySelectorAll(".dropdown-item").forEach(item => {
+            item.addEventListener("click", () => {
+                selectedCategory = item.dataset.value;
+                selectTopicBtn.textContent = selectedCategory + " ▼";
+                dropdown.style.display = "none";
+            });
+        });
+
+        // 저장
+        saveBtn.addEventListener("click", async () => {
+            const title = titleInput.value.trim();
+            const content = contentInput.value.trim();
+
+            if (!user_id) return alert("로그인이 필요합니다.");
+            if (!selectedCategory) return Swal.fire({
+                icon: 'warning',
+                title: '주제를 선택해주세요',
+                text: '주제를 선택해야 기록할 수 있어요!',
+                confirmButtonColor: '#5E61FF',
+                allowOutsideClick: false,
+                backdrop: true,
+                heightAuto: false
+            });
+            if (!title) return Swal.fire({
+                icon: 'warning',
+                title: '제목을 입력해주세요😊',
+                text: '제목을 입력해야 기록할 수 있어요!',
+                confirmButtonColor: '#5E61FF',
+                allowOutsideClick: false,
+                backdrop: true,
+                heightAuto: false
+            });
+            if (!content) return Swal.fire({
+                icon: 'warning',
+                title: '내용을 입력해주세요😊',
+                text: '내용을 입력해야 기록할 수 있어요!',
+                confirmButtonColor: '#5E61FF',
+                allowOutsideClick: false,
+                backdrop: true,
+                heightAuto: false
+            });
+
+            const { data, error } = await supabase.from("community").insert([
+                {
+                    user_id,
+                    title,
+                    content,
+                    category: selectedCategory,
+                    writeTime: new Date().toISOString()
+                }
+            ]).select();
+
+            if (error) {
+                console.error(error);
+                alert("저장 실패!");
+            } else {
+                const commu_id = data[0].commu_id; // 저장된 글의 commu_id 추출
+
+                Swal.fire({
+                    icon: 'success',
+                    title: '게시글 작성 완료😊',
+                    text: '게시글이 성공적으로 저장되었어요!',
+                    confirmButtonColor: '#5E61FF',
+                    allowOutsideClick: false,
+                    backdrop: true,
+                    heightAuto: false
+                }).then(() => {
+                    window.location.href = `게시글2.html?id=${commu_id}`; // 상세 페이지로 이동
+                });
+                titleInput.value = "";
+                contentInput.value = "";
+                selectTopicBtn.textContent = "게시글의 주제를 선택해주세요 ▼";
+                selectedCategory = null;
+            }
+        });
+    </script>
+</body>
+
+</html>
